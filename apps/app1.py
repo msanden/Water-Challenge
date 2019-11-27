@@ -13,7 +13,7 @@ from app import app
 
 url = 'https://waterpoint-engine-challenge-dev.mybluemix.net/sensors/daily-county-readings/{}'
 counties = ['Wajir','Turkana','Garissa','Marsabit','Isiolo']
-waterpoint_fields = ['mWaterId','county','siteName','expertStatus','siteLon','siteLat','mlStatusPred']
+waterpoint_fields = ['mWaterId','county','siteName','expertStatus','households','siteLon','siteLat','mlStatusPred']
 
 waterpoint_data = []
 for county in counties:
@@ -31,8 +31,8 @@ for index in range(len(waterpoint_data)):
     empty_df.append(chopped_df)
 
 df = pd.concat(empty_df)
+
 county_data = DataFrame(df, columns=waterpoint_fields)
-working_copy_data = county_data.copy()
 
 PAGE_SIZE = 50
 
