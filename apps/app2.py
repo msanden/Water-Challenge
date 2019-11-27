@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output
 from app import app
 
 layout = html.Div([
+
     'Choose a County:',
     dcc.Dropdown(
         id='persisted-county',
@@ -12,10 +13,10 @@ layout = html.Div([
         options= [{'label': str(item), 'value': str(item)} for item in set(county_data['county'])],
         persistence=True
         ),
-    ]),
         
     html.Div(id='persisted-choices'),
-
+    
+  ]),
 
 @app.callback(
     Output('persisted-choices', 'children'),
