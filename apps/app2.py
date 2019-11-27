@@ -12,26 +12,6 @@ import dash_table
 
 from app import app
 
-# layout = html.Div([
-
-#     'Choose a County:',
-#     dcc.Dropdown(
-#         id='persisted-county',
-#         value='Marsabit',
-#         options= [{'label': str(item), 'value': str(item)} for item in set(county_data['county'])],
-#         persistence=True
-#         ),
-        
-#     html.Div(id='persisted-choices'),
-
-#   ]),
-
-# @app.callback(
-#     Output('persisted-choices', 'children'),
-#     [Input('persisted-county', 'value')]
-# )
-# def set_out(county):
-#     return 'You chose: {}'.format(county)
 
 url = 'https://waterpoint-engine-challenge-dev.mybluemix.net/sensors/daily-county-readings/{}'
 counties = ['Garissa','Isiolo','Marsabit','Turkana','Wajir']
@@ -70,9 +50,9 @@ layout = html.Div([
             dcc.Dropdown(
                 id='status',
                 value=['offline','repair','normal use'],
-                options= [{'label': str(item), 'value': str(item)} for item in set(county_data['expertStatus'])],
+                options= [{'label': str(item), 'value': str(item)} for item in set(df['expertStatus'])],
                 multi=True,
-                # value=list(set(county_data['expertStatus']))
+                # value=list(set(df['expertStatus']))
                 )
         ], className='three columns'),
 
@@ -83,8 +63,8 @@ layout = html.Div([
         html.Div([
             dash_table.DataTable(
                 id='datatable',
-                data=county_data.to_dict('records'),
-                columns=[{"name": i, "id": i, "deletable": True} for i in county_data.columns],
+                data=df.to_dict('records'),
+                columns=[{"name": i, "id": i, "deletable": True} for i in df.columns],
 
                 page_action='native',
                 page_size = PAGE_SIZE,
@@ -107,7 +87,7 @@ layout = html.Div([
     Output('datatable', 'data'),
     [Input('status', 'value')])
 def update_selected_row_indices(status):
-    map_aux = county_data.copy()
+    map_aux = df.copy()
     map_aux = map_aux[map_aux['expertStatus'].isin(status)] # status filter 
     data = map_aux.to_dict('records')
     return data
