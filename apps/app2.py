@@ -34,7 +34,7 @@ from app import app
 #     return 'You chose: {}'.format(county)
 
 url = 'https://waterpoint-engine-challenge-dev.mybluemix.net/sensors/daily-county-readings/{}'
-counties = ['Wajir','Turkana','Garissa','Marsabit','Isiolo']
+counties = ['Garissa','Isiolo','Marsabit','Turkana','Wajir']
 waterpoint_fields = ['mWaterId','county','siteName','expertStatus','households','siteLon','siteLat','mlStatusPred']
 
 def make_request(url):
@@ -58,9 +58,10 @@ def table_data(list_dict):
 
 df = table_data(waterpoint_data)
 
-county_data = DataFrame(df, columns=waterpoint_fields)
+df = DataFrame(df, columns=waterpoint_fields)
+df = df.drop_duplicates()
 
-PAGE_SIZE = 50
+PAGE_SIZE = 20
 
 layout = html.Div([
 
@@ -73,9 +74,11 @@ layout = html.Div([
                 multi=True,
                 # value=list(set(county_data['expertStatus']))
                 )
-        ]),
+        ], className='three columns'),
 
         html.Br(),
+
+        html.Div([dcc.Graph(id='bar-graph')]),
 
         html.Div([
             dash_table.DataTable(
@@ -96,11 +99,9 @@ layout = html.Div([
 
         ]),
 
-        html.Br(), html.Br(),
+        # html.Br(), html.Br(),
 
-        html.Div([dcc.Graph(id='bar-graph')]),
-
-    ])
+    ],className='container')
 
 @app.callback(
     Output('datatable', 'data'),
