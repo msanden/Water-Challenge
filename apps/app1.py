@@ -41,37 +41,26 @@ df = DataFrame(df, columns=waterpoint_fields)
 df = df.drop_duplicates()
 
 
-PAGE_SIZE = 50
+PAGE_SIZE = 20
 
 
 layout = html.Div([
-
-# store = dcc.Store(id='my-store', data={'my-data': 'data'})
-
     html.Div([
-        dash_table.DataTable(
-            id='datatable',
-            data=county_data.to_dict('records'),
-            columns=[{"name": i, "id": i} for i in county_data.columns],
+        html.P('Select a County'),
+        dcc.Dropdown(
+            id='county',
+            value=['Garissa'],
+            options= [{'label': str(item), 'value': str(item)} for item in set(df['county'])],
+            multi=True,
+            # value=list(set(df['expertStatus']))
+            )
+        ]),
 
-            page_action='native',
-            page_size = PAGE_SIZE,
 
-            sort_action='native',
-            selected_rows=[],
 
-            style_table = {'overflowX': 'scroll','overflowY': 'scroll', 'border': 'thin lightgrey solid'},            
-            style_header={'backgroundColor': 'white','fontWeight': 'bold'},
-            style_as_list_view=True,
-            style_cell={'textAlign': 'left'},
-            # style_cell_conditional=[
-            #     {
-            #         'if': {'column_id': i},
-            #         'textAlign': 'left'
-            #     } for c in ['Date', 'Region']
-            # ],
-            )]
-        ),
+
+
+
 
     ],className='container')
 
