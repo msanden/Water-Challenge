@@ -1,7 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from dash.exceptions import PreventUpdate
 
 import plotly.graph_objs as go
 
@@ -54,7 +53,7 @@ layout = html.Div([
                 multi=True,
                 # value=list(set(df['expertStatus']))
                 )
-        ], className='three columns'),
+        ]),
 
         html.Br(),
 
@@ -78,8 +77,6 @@ layout = html.Div([
                 ),
 
         ]),
-
-        # html.Br(), html.Br(),
 
     ],className='container')
 
