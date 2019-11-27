@@ -5,21 +5,21 @@ from dash.dependencies import Input, Output
 from app import app
 
 layout = html.Div([
-    html.H3('App 2'),
+    'Choose a County:',
     dcc.Dropdown(
-        id='app-2-dropdown',
-        options=[
-            {'label': 'App 2 - {}'.format(i), 'value': i} for i in [
-                'NYC', 'MTL', 'LA'
-            ]
-        ]
-    ),
-    html.Div(id='app-2-display-value'),
-])
+        id='persisted-county',
+        value='Marsabit',
+        options= [{'label': str(item), 'value': str(item)} for item in set(county_data['county'])],
+        persistence=True
+        ),
+    ]),
+        
+    html.Div(id='persisted-choices'),
 
 
 @app.callback(
-    Output('app-2-display-value', 'children'),
-    [Input('app-2-dropdown', 'value')])
-def display_value(value):
-    return 'You have selected "{}"'.format(value)
+    Output('persisted-choices', 'children'),
+    [Input('persisted-county', 'value')]
+)
+def set_out(county):
+    return 'You chose: {}'.format(county)
