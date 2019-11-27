@@ -13,7 +13,7 @@ from app import app
 
 url = 'https://waterpoint-engine-challenge-dev.mybluemix.net/sensors/daily-county-readings/{}'
 counties = ['Wajir','Turkana','Garissa','Marsabit','Isiolo']
-waterpoint_fields = ['mWaterId','county','siteName','expertStatus','siteLon','siteLat','localDate','mlStatusPred']
+waterpoint_fields = ['mWaterId','county','siteName','expertStatus','siteLon','siteLat','mlStatusPred']
 
 waterpoint_data = []
 for county in counties:
@@ -32,6 +32,7 @@ for index in range(len(waterpoint_data)):
 
 df = pd.concat(empty_df)
 county_data = DataFrame(df, columns=waterpoint_fields)
+working_copy_data = county_data.copy()
 
 PAGE_SIZE = 50
 
@@ -51,7 +52,8 @@ layout = html.Div([
 
             sort_action='native',
             selected_rows=[],
-            
+
+            style_table = {'overflowX': 'scroll','overflowY': 'scroll', 'border': 'thin lightgrey solid'},            
             style_header={'backgroundColor': 'white','fontWeight': 'bold'},
             style_as_list_view=True,
             style_cell={'textAlign': 'left'},
@@ -61,11 +63,10 @@ layout = html.Div([
             #         'textAlign': 'left'
             #     } for c in ['Date', 'Region']
             # ],
-
             )]
         ),
 
-    ])
+    ],className='container')
 
 
 
