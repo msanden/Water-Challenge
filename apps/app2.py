@@ -36,7 +36,6 @@ def table_data(list_dict):
     return df
 
 df = table_data(waterpoint_data)
-
 df = DataFrame(df, columns=waterpoint_fields)
 df = df.drop_duplicates()
 
@@ -47,7 +46,7 @@ layout = html.Div([
         html.Div([
             html.P('Water Point Status:'),
             dcc.Dropdown(
-                id='status',
+                id='user_status_dropdown',
                 value=['offline','repair','normal use'],
                 options= [{'label': str(item), 'value': str(item)} for item in set(df['expertStatus'])],
                 multi=True,
@@ -61,7 +60,7 @@ layout = html.Div([
 
         html.Div([
             dash_table.DataTable(
-                id='datatable',
+                id='data_table',
                 data=df.to_dict('records'),
                 columns=[{"name": i, "id": i, "deletable": True} for i in df.columns],
 
@@ -80,23 +79,25 @@ layout = html.Div([
 
     ],className='container')
 
+
+#callback table after user updates the dropdown menu
 @app.callback(
-    Output('datatable', 'data'),
-    [Input('status', 'value')])
-def update_selected_row_indices(status):
+    Output('data_table', 'data'),
+    [Input('user_status_dropdown', 'value')])
+def filter_table_with_dropdown(user_selected_status):
     map_aux = df.copy()
-    map_aux = map_aux[map_aux['expertStatus'].isin(status)] # status filter 
+    map_aux = map_aux[map_aux['expertStatus'].isin(user_selected_status)] # filter table with expertStatus selection 
     data = map_aux.to_dict('records')
     return data
 
 
-#datatable to bar graph
+#callback bar graph after dropdown menu filters rows
 @app.callback(
     Output('bar-graph', 'figure'),
-    [Input('datatable', 'data'),
-     Input('datatable', 'selected_rows')])
+    [Input('data_table', 'data'),
+     Input('data_table', 'selected_rows')])
 def update_figure(data, selected_rows):
-    dff = pd.DataFrame(data)  #??? what does this return
+    dff = pd.DataFrame(data)  
     layout = go.Layout(bargap=0.05, bargroupgap=0, barmode='group', showlegend=False, dragmode="select",
                     xaxis=dict(showgrid=False, nticks=50, fixedrange=False),
                     yaxis=dict(showticklabels=True, showgrid=False, fixedrange=False, rangemode='nonnegative', zeroline=False)
