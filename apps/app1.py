@@ -66,7 +66,7 @@ layout = html.Div([
 
     ],className='container')
 
-#callback for map and dropdown
+#callback map after user updates the dropdown menu
 @app.callback(
     dash.dependencies.Output("map", "figure"),
     [dash.dependencies.Input("user_county_dropdown", "value")])
