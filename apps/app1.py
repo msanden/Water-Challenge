@@ -1,3 +1,4 @@
+import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
@@ -36,37 +37,51 @@ def table_data(list_dict):
     return df
 
 df = table_data(waterpoint_data)
-
 df = DataFrame(df, columns=waterpoint_fields)
 df = df.drop_duplicates()
 
-
-PAGE_SIZE = 20
+mapbox_access_token = 'pk.eyJ1IjoibWFudWVsc24iLCJhIjoiY2szY2k5dTF2MHNhejNjbGRyNnNzcmF4dCJ9.-bX5MXB3Ezlbnwsr-JA1kA'
 
 
 layout = html.Div([
+    
     html.Div([
         html.P('Select a County'),
         dcc.Dropdown(
-            id='county',
-            value=['Garissa'],
+            id='county_dropdown',
             options= [{'label': str(item), 'value': str(item)} for item in set(df['county'])],
+            value=['Garissa'],
             multi=True,
-            # value=list(set(df['expertStatus']))
+            style={"display": "block", "margin-left": "auto", "margin-right": "auto", "width": "50%"},
             )
         ]),
 
-
-
-
-
-
+    html.Div([
+        dcc.Graph(
+            id='map',
+            animate=True, 
+            style={'margin-top': '20'}
+            )
+        ]),
 
     ],className='container')
 
 
-
-
+@app.callback(
+    dash.dependencies.Output("map", "figure"),
+    [dash.dependencies.Input("county_dropdown", "value")])
+def mapping(user_selected_county):
+    trace = []
+    for county_val in user_selected_county:
+        dff = df[df["county"] == county_val]
+        trace.append(
+            go.Scattermapbox(lat=dff["siteLat"], lon=dff["siteLon"], mode='markers', marker={'symbol': "circle", 'size': 10},
+                             text=dff['expertStatus'], hoverinfo='text', name=county_val))
+    return {"data": trace,
+            "layout": go.Layout(autosize=True, hovermode='closest', showlegend=False, height=700,
+                                mapbox={'accesstoken': mapbox_access_token, 'bearing': 0,
+                                        'center': {'lat': -0.023559, 'lon': 37.906193}, 'pitch': 0, 'zoom': 5,
+                                        "style": 'mapbox://styles/mapbox/light-v9'})}
 
 
 
