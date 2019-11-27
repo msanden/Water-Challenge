@@ -48,7 +48,7 @@ layout = html.Div([
     html.Div([
         html.P('Select a County'),
         dcc.Dropdown(
-            id='county_dropdown',
+            id='user_county_dropdown',
             options= [{'label': str(item), 'value': str(item)} for item in set(df['county'])],
             value=['Garissa'],
             multi=True,
@@ -66,10 +66,10 @@ layout = html.Div([
 
     ],className='container')
 
-
+#callback for map and dropdown
 @app.callback(
     dash.dependencies.Output("map", "figure"),
-    [dash.dependencies.Input("county_dropdown", "value")])
+    [dash.dependencies.Input("user_county_dropdown", "value")])
 def mapping(user_selected_county):
     trace = []
     for county_val in user_selected_county:
