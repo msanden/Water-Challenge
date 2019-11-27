@@ -1,7 +1,8 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from dash.exceptions import PreventUpdate
+
+import plotly.graph_objs as go
 
 import requests, json
 import pandas as pd
@@ -12,27 +13,33 @@ from app import app
 
 
 url = 'https://waterpoint-engine-challenge-dev.mybluemix.net/sensors/daily-county-readings/{}'
-counties = ['Wajir','Turkana','Garissa','Marsabit','Isiolo']
+counties = ['Garissa','Isiolo','Marsabit','Turkana','Wajir']
 waterpoint_fields = ['mWaterId','county','siteName','expertStatus','households','siteLon','siteLat','mlStatusPred']
 
-waterpoint_data = []
-for county in counties:
-    j_resp = requests.get(url.format(county)).json()
+def make_request(url):
+    waterpoint_data = []
+    for county in counties:
+        j_resp = requests.get(url.format(county)).json()
+        waterpoint_sites = {'data': j_resp['data']}
+        waterpoint_data.append(waterpoint_sites) 
+    return waterpoint_data
 
-    waterpoint_sites = {
-                'data': j_resp['data']
-                }
-    waterpoint_data.append(waterpoint_sites)
+waterpoint_data = make_request(url)
 
-empty_df = []
-for index in range(len(waterpoint_data)):
-    for key in waterpoint_data[index]:
-        chopped_df = pd.DataFrame(waterpoint_data[index][key])
-    empty_df.append(chopped_df)
+def table_data(list_dict):
+    empty_df = []
+    for index in range(len(list_dict)):
+        for key in list_dict[index]:
+            broken_df = pd.DataFrame(list_dict[index][key])
+        empty_df.append(broken_df)
+    df = pd.concat(empty_df)
+    return df
 
-df = pd.concat(empty_df)
+df = table_data(waterpoint_data)
 
-county_data = DataFrame(df, columns=waterpoint_fields)
+df = DataFrame(df, columns=waterpoint_fields)
+df = df.drop_duplicates()
+
 
 PAGE_SIZE = 50
 
