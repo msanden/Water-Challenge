@@ -4,7 +4,7 @@ from dash.dependencies import Input, Output
 
 import plotly.graph_objs as go
 
-import requests, json
+import requests, requests_cache, json
 import pandas as pd
 from pandas import DataFrame
 import dash_table
@@ -12,10 +12,9 @@ import dash_table
 from app import app
 
 
+requests_cache.install_cache('waterpoint_cache', backend='sqlite', expire_after=86400)
 url = 'https://waterpoint-engine-challenge-dev.mybluemix.net/sensors/daily-county-readings/{}'
 counties = ['Garissa','Isiolo','Marsabit','Turkana','Wajir']
-waterpoint_fields = ['mWaterId','county','siteName','expertStatus','households','siteLon','siteLat','mlStatusPred']
-
 def make_request(url):
     waterpoint_data = []
     for county in counties:
@@ -36,6 +35,7 @@ def table_data(list_dict):
     return df
 
 df = table_data(waterpoint_data)
+waterpoint_fields = ['mWaterId','county','siteName','expertStatus','households','siteLon','siteLat','mlStatusPred']
 df = DataFrame(df, columns=waterpoint_fields)
 df = df.drop_duplicates()
 
@@ -52,11 +52,11 @@ layout = html.Div([
                 multi=True,
                 # value=list(set(df['expertStatus']))
                 )
-        ]),
+        ],className='row'),
 
         html.Br(),
 
-        html.Div([dcc.Graph(id='bar-graph')]),
+        html.Div([dcc.Graph(id='bar-graph')], className='row'),
 
         html.Div([
             dash_table.DataTable(
@@ -75,7 +75,7 @@ layout = html.Div([
                 style_cell={'textAlign': 'left'},
                 ),
 
-        ]),
+        ], className='row'),
 
     ],className='container')
 
