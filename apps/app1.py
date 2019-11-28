@@ -53,20 +53,10 @@ layout = html.Div([
                 options= [{'label': str(item), 'value': str(item)} for item in set(df['county'])],
                 value=['Garissa'],
                 multi=True,
-                style={"display": "block"},
+                # style={"display": "block"},
                 )
-            ],className="six columns"),
-
-        html.Div([
-            html.P('WaterPoint Status'),
-            dcc.Dropdown(
-                id='user_status_dropdown',
-                options= [{'label': str(item), 'value': str(item)} for item in set(df['expertStatus'])],
-                value=['normal use'],
-                multi=True,
-                style={"display": "block"},
-                )
-            ],className="six columns"),], className="row"),
+            ])
+        ], className="row"),
 
     html.Div([
         dcc.Graph(
