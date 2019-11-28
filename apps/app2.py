@@ -43,8 +43,9 @@ PAGE_SIZE = 20
 
 layout = html.Div([
 
+        html.P('Water Point Status:'),
+
         html.Div([
-            html.P('Water Point Status:'),
             dcc.Dropdown(
                 id='user_status_dropdown',
                 value=['offline','repair','normal use'],
