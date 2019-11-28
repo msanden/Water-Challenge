@@ -21,3 +21,9 @@ __pycache__/
 *.pyc
 
 .vs/
+
+# OSX files
+.DS_Store
+
+# Cache of project
+.sqlite
