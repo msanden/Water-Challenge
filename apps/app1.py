@@ -25,27 +25,32 @@ df = df.drop_duplicates()
 mapbox_access_token = 'pk.eyJ1IjoibWFudWVsc24iLCJhIjoiY2szY2k5dTF2MHNhejNjbGRyNnNzcmF4dCJ9.-bX5MXB3Ezlbnwsr-JA1kA'
 
 layout = html.Div([
-    
-    html.Div([
-        html.Div([
-            html.P('Select a County'),
-            dcc.Dropdown(
-                id='user_county_dropdown',
-                options= [{'label': str(item), 'value': str(item)} for item in set(df['county'])],
-                value=['Garissa'],
-                multi=True,
-                # style={"display": "block"},
-                )
-            ])
-        ], className="row"),
+
+    html.H3('Water Point Operational Status'),
 
     html.Div([
-        dcc.Graph(
-            id='map',
-            animate=True, 
-            style={'margin-top': '20'}
-            )
-        ], className="row"),
+    
+        html.Div([
+            html.Div([
+                html.P('Select County'),
+                dcc.Dropdown(
+                    id='user_county_dropdown',
+                    options= [{'label': str(item), 'value': str(item)} for item in set(df['county'])],
+                    value=['Turkana','Marsabit','Wajir'],
+                    multi=True,
+                    # style={"display": "block"},
+                    )
+                ])
+            ], className="six columns"),
+
+        html.Div([
+            dcc.Graph(
+                id='map',
+                animate=True, 
+                style={'margin-top': '20'}
+                )
+            ], className="six columns"),
+    ]),
 
     ],className='container')
 
@@ -59,12 +64,19 @@ def mapping(user_selected_county):
         dff = df[df["county"] == county_val]
         trace.append(
             go.Scattermapbox(lat=dff["siteLat"], lon=dff["siteLon"], mode='markers', marker={'symbol': "circle", 'size': 10},
-                             text=dff['expertStatus'], hoverinfo='text', name=county_val))
+                             text=dff['siteName']+" : "+dff['expertStatus'], hoverinfo='text', name=county_val))
     return {"data": trace,
-            "layout": go.Layout(autosize=True, hovermode='closest', showlegend=False, height=700, title='Locate WaterServices',
-                                mapbox={'accesstoken': mapbox_access_token, 'bearing': 0,
-                                        'center': {'lat': -0.023559, 'lon': 37.906193}, 'pitch': 0, 'zoom': 5,
-                                        "style": 'mapbox://styles/mapbox/light-v9'})}
+            "layout": go.Layout(autosize=True, hovermode='closest',
+                                title='Site Name : Status',
+                                height=600,
+                                titlefont={'color':'#191A1A', 'size':14},
+                                margin={'l':35,'r':35, 'b':35,'t':45},
+                                mapbox={'accesstoken': mapbox_access_token,
+                                        'bearing': 0,
+                                        'center': {'lat': -0.023559, 'lon': 37.906193},
+                                        'pitch': 0, 'zoom': 5,
+                                        "style": 'outdoors'
+                                        })}
 
 
 
