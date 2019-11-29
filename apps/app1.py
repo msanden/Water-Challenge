@@ -26,7 +26,7 @@ mapbox_access_token = 'pk.eyJ1IjoibWFudWVsc24iLCJhIjoiY2szY2k5dTF2MHNhejNjbGRyNn
 
 layout = html.Div([
 
-    html.H3('Water Point Operational Status'),
+    html.Div([html.H3('Waterpoint Services: Overview')], style={'text-align': 'center'}),
 
     html.Div([
     
@@ -38,7 +38,6 @@ layout = html.Div([
                     options= [{'label': str(item), 'value': str(item)} for item in set(df['county'])],
                     value=['Turkana','Marsabit','Wajir'],
                     multi=True,
-                    # style={"display": "block"},
                     )
                 ])
             ], className="six columns"),
