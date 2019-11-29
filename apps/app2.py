@@ -25,40 +25,48 @@ PAGE_SIZE = 20
 
 layout = html.Div([
 
-        html.P('Water Point Status:'),
+        html.Div([html.H3('Waterpoint Services: Detail View')], style={'text-align': 'center'}),
 
         html.Div([
-            dcc.Dropdown(
-                id='user_status_dropdown',
-                value=['offline','repair','normal use'],
-                options= [{'label': str(item), 'value': str(item)} for item in set(df['expertStatus'])],
-                multi=True,
-                # value=list(set(df['expertStatus']))
-                )
-        ],className='row'),
+            
+            'Select Status:  ',
 
-        html.Br(),
+            html.Div([
 
-        html.Div([dcc.Graph(id='bar-graph')], className='row'),
+                dcc.Dropdown(
+                    id='user_status_dropdown',
+                    value=['offline','repair','normal use'],
+                    options= [{'label': str(item), 'value': str(item)} for item in set(df['expertStatus'])],
+                    multi=True,
+                    style={"display": "block"},
+                    )
+            ],className='six columns'),
 
-        html.Div([
-            dash_table.DataTable(
-                id='data_table',
-                data=df.to_dict('records'),
-                columns=[{"name": i, "id": i, "deletable": True} for i in df.columns],
+            html.Br(),html.Br(),
 
-                page_action='native',
-                page_size = PAGE_SIZE,
+            html.Div([
+                dash_table.DataTable(
+                    id='data_table',
+                    data=df.to_dict('records'),
+                    columns=[{"name": i, "id": i, "deletable": True} for i in df.columns],
 
-                sort_action='native',
-                selected_rows=[],
-                style_table = {'overflowX': 'scroll','overflowY': 'scroll', 'border': 'thin lightgrey solid'},            
-                style_header={'backgroundColor': 'white','fontWeight': 'bold'},
-                style_as_list_view=True,
-                style_cell={'textAlign': 'left'},
-                ),
+                    page_action='native',
+                    page_size = PAGE_SIZE,
+
+                    sort_action='native',
+                    selected_rows=[],
+                    style_table = {'overflowX': 'scroll','overflowY': 'scroll', 'border': 'thin lightgrey solid'},            
+                    style_header={'backgroundColor': 'white','fontWeight': 'bold'},
+                    style_as_list_view=True,
+                    style_cell={'textAlign': 'left'},
+                    ),
+
+            ], className='six columns'),            
 
         ], className='row'),
+
+        html.Div([dcc.Graph(id='bar-graph')], className='six columns'),
+
 
     ],className='container')
 
@@ -81,9 +89,10 @@ def filter_table_with_dropdown(user_selected_status):
      Input('data_table', 'data')])
 def update_figure(selected_rows, data):
     dff = pd.DataFrame(data)  
-    layout = go.Layout(bargap=0.05, bargroupgap=0, barmode='group', showlegend=False, dragmode="select",
-                    xaxis=dict(showgrid=False, nticks=50, fixedrange=False),
-                    yaxis=dict(showticklabels=True, showgrid=False, fixedrange=False, rangemode='nonnegative', zeroline=False)
+    layout = go.Layout(barmode='group', dragmode="select",
+                    title='Waterpoint Status',
+                    titlefont={'color':'#191A1A', 'size':14},
+                    margin={'l':35,'r':35, 'b':35,'t':45},
                     )
     trace = go.Bar(x=dff.groupby('county',as_index = False).count()['county'],
                    y=dff.groupby('county',as_index = False).count()['expertStatus'])
