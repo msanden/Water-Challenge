@@ -77,15 +77,15 @@ def filter_table_with_dropdown(user_selected_status):
 #callback bar graph after dropdown menu filters rows
 @app.callback(
     Output('bar-graph', 'figure'),
-    [Input('data_table', 'data'),
-     Input('data_table', 'selected_rows')])
-def update_figure(data, selected_rows):
+    [Input('data_table', 'selected_rows'),
+     Input('data_table', 'data')])
+def update_figure(selected_rows, data):
     dff = pd.DataFrame(data)  
     layout = go.Layout(bargap=0.05, bargroupgap=0, barmode='group', showlegend=False, dragmode="select",
                     xaxis=dict(showgrid=False, nticks=50, fixedrange=False),
                     yaxis=dict(showticklabels=True, showgrid=False, fixedrange=False, rangemode='nonnegative', zeroline=False)
                     )
-    data = go.Bar(x=dff.groupby('county', as_index = False).count()['county'],
-                  y=dff.groupby('county', as_index = False).count()['expertStatus'])
+    trace = go.Bar(x=dff.groupby('county',as_index = False).count()['county'],
+                   y=dff.groupby('county',as_index = False).count()['expertStatus'])
     
-    return go.Figure(data=data, layout=layout)
+    return go.Figure(data=trace, layout=layout)
