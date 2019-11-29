@@ -42,6 +42,6 @@ You can run the app on your browser at http://127.0.0.1:8050
 ## Screenshots
 
 ![demo1.png](demo1.png)
-![demo.png](demo.png)
-
+![demo2.png](demo2.png)
+![demo3.png](demo3.png)
 
