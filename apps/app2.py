@@ -10,16 +10,22 @@ from pandas import DataFrame
 import dash_table
 
 from app import app
-from .resource import make_request, table_data
+from .resource import make_request, concat_data
 
 
 requests_cache.install_cache('waterpoint_cache', backend='sqlite', expire_after=86400)
+
 url = 'https://waterpoint-engine-challenge-dev.mybluemix.net/sensors/daily-county-readings/{}'
 waterpoint_data = make_request(url)
-df = table_data(waterpoint_data)
-waterpoint_fields = ['mWaterId','county','siteName','expertStatus','households','siteLon','siteLat','mlStatusPred']
+
+df = concat_data(waterpoint_data)
+waterpoint_fields = ['mWaterId','county','siteName','expertStatus','households','siteLon','siteLat']
+
 df = DataFrame(df, columns=waterpoint_fields)
-df = df.drop_duplicates()
+
+df = df.drop_duplicates(subset='siteLon', keep='first')
+
+# df = df.drop_duplicates()
 
 PAGE_SIZE = 20
 
@@ -35,7 +41,7 @@ layout = html.Div([
 
                 dcc.Dropdown(
                     id='user_status_dropdown',
-                    value=['offline','repair','normal use'],
+                    value=list(set(df['expertStatus'])),
                     options= [{'label': str(item), 'value': str(item)} for item in set(df['expertStatus'])],
                     multi=True,
                     style={"display": "block"},
