@@ -4,6 +4,7 @@ import pandas as pd
 from pandas import DataFrame
 
 counties = ['Garissa','Isiolo','Marsabit','Turkana','Wajir']
+
 def make_request(url):
     waterpoint_data = []
     for county in counties:
@@ -13,7 +14,7 @@ def make_request(url):
     return waterpoint_data
 
 
-def table_data(list_dict):
+def concat_data(list_dict):
     empty_df = []
     for index in range(len(list_dict)):
         for key in list_dict[index]:
