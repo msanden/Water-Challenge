@@ -11,13 +11,13 @@ from pandas import DataFrame
 import dash_table
 
 from app import app
-from .resource import make_request, table_data
+from .resource import make_request, concat_data
 
 
 requests_cache.install_cache('waterpoint_cache', backend='sqlite', expire_after=86400)
 url = 'https://waterpoint-engine-challenge-dev.mybluemix.net/sensors/daily-county-readings/{}'
 waterpoint_data = make_request(url)
-df = table_data(waterpoint_data)
+df = concat_data(waterpoint_data)
 waterpoint_fields = ['mWaterId','county','siteName','expertStatus','households','siteLon','siteLat','mlStatusPred']
 df = DataFrame(df, columns=waterpoint_fields)
 df = df.drop_duplicates()
